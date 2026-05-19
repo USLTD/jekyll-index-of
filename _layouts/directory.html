@@ -331,6 +331,7 @@
                                         
                                         {% comment %} Fetch from Include component {% endcomment %}
                                         {% capture icon_name %}{% include icon_mapper.html ext=item.ext %}{% endcapture %}
+                                        {% assign icon_name = icon_name | strip %}
                                         
                                         <img class="icon" src="{{ '/assets/icons/' | append: icon_name | append: '.png' | relative_url }}" alt="" aria-hidden="true">
                                         {{ item.name | escape }}
