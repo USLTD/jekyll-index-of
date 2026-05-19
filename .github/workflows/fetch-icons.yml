@@ -1,0 +1,131 @@
+name: Fetch missing Silk icons
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '404.html'
+      - '_layouts/directory.html'
+      - '_includes/icon_mapper.html'
+      - '.github/workflows/fetch-icons.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch missing icons (PowerShell)
+        shell: pwsh
+        run: |
+          $404File = '404.html'
+          $LayoutFile = '_layouts/directory.html'
+          $MapperFile = '_includes/icon_mapper.html'
+          
+          $combinedContent = ""
+
+          if (Test-Path $404File) {
+            Write-Host "Reading 404 page..."
+            $combinedContent += Get-Content $404File -Raw
+          }
+          
+          if (Test-Path $LayoutFile) {
+            Write-Host "Reading directory layout..."
+            $combinedContent += Get-Content $LayoutFile -Raw
+          }
+          
+          if (Test-Path $MapperFile) {
+            Write-Host "Reading icon mapper component..."
+            $combinedContent += Get-Content $MapperFile -Raw
+          }
+
+          if ($combinedContent -eq "") {
+            Write-Host "No 404 page, layout or mapper files found, skipping icon fetch."
+            exit 0
+          }
+
+          $pattern = "(?<=assign icon = ')[^']+(?=')|(?<=src=""/assets/icons/)[^/]+(?=\.png"")" 
+          $icons = [regex]::Matches($combinedContent, $pattern) | ForEach-Object { $_.Value } | Sort-Object -Unique
+
+          Write-Host "Icons referenced in architecture: $($icons -join ', ')"
+
+          $iconDir = 'assets/icons'
+          New-Item -ItemType Directory -Force -Path $iconDir | Out-Null
+
+          $placeholderName = '__placeholder'
+          $placeholderFile = "$iconDir/$placeholderName.png"
+          $placeholderUrl = 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Transparent.png'
+
+          $changedFiles = @()
+          $fallbackIcons = @()
+
+          if (-not (Test-Path $placeholderFile)) {
+            Write-Host "Downloading placeholder icon from $placeholderUrl ..."
+            Invoke-WebRequest -Uri $placeholderUrl -OutFile $placeholderFile -ErrorAction Stop
+            $changedFiles += $placeholderFile
+          }
+
+          foreach ($icon in $icons) {
+            if ($icon -eq $placeholderName) {
+              continue
+            }
+
+            if ($icon -eq "{{ icon }}" -or $icon -eq "{{ icon_name }}") {
+              continue
+            }
+
+            $iconFile = "$iconDir/$icon.png"
+            $item = Get-Item -LiteralPath $iconFile -ErrorAction SilentlyContinue
+            $isLink = $null -ne $item -and $null -ne $item.LinkType
+            $needsDownload = ($null -eq $item) -or $isLink
+
+            if ($needsDownload) {
+              $url = "https://raw.githubusercontent.com/markjames/famfamfam-silk-icons/master/icons/$icon.png"
+              $tempFile = "$iconFile.download"
+              Write-Host "Downloading $icon.png from $url ..."
+              try {
+                Invoke-WebRequest -Uri $url -OutFile $tempFile -ErrorAction Stop
+                if (Test-Path $iconFile) { Remove-Item -LiteralPath $iconFile -Force }
+                Move-Item -LiteralPath $tempFile -Destination $iconFile -Force
+                $changedFiles += $iconFile
+                Write-Host "  -> saved"
+              } catch {
+                if (Test-Path $tempFile) { Remove-Item -LiteralPath $tempFile -Force }
+                Write-Warning "Failed to download $icon.png : $_"
+                if (Test-Path $iconFile) { Remove-Item -LiteralPath $iconFile -Force }
+                try {
+                  New-Item -ItemType SymbolicLink -Path $iconFile -Target "$placeholderName.png" -Force | Out-Null
+                  Write-Host "  -> linked to placeholder"
+                } catch {
+                  Copy-Item -LiteralPath $placeholderFile -Destination $iconFile -Force
+                  Write-Host "  -> copied placeholder"
+                }
+                $changedFiles += $iconFile
+                $fallbackIcons += "$icon.png"
+              }
+            } else {
+              Write-Host "$icon.png already exists, skipping."
+            }
+          }
+
+          if ($fallbackIcons.Count -gt 0) {
+            Write-Warning "Using placeholder for: $($fallbackIcons -join ', ')"
+          }
+
+          if ($changedFiles.Count -gt 0) {
+            Write-Host "Committing icon file updates..."
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add assets/icons/
+            git commit -m "Update directory listing icons [skip ci]"
+            git push
+          } else {
+            Write-Host "All icons already present, nothing to commit."
+          }

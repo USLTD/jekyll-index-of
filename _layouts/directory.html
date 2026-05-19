@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Index of /public/{{ page.dir_path | escape }}</title>
+    <style>
+        :root {
+            --bg-color: #f5f6f8;
+            --text-color: #222222;
+            --text-muted: #666666;
+            --card-bg: #ffffff;
+            --border-color: #cccccc;
+            --row-alt: #fbfbfb;
+            --row-hover: #e8f0fe;
+            --link-color: #0366d6;
+            --link-hover: #000000;
+            --shadow: 0 2px 5px rgba(0,0,0,0.05);
+            --focus-ring: #0366d6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #e0e0e0;
+                --text-muted: #999999;
+                --card-bg: #1e1e1e;
+                --border-color: #333333;
+                --row-alt: #242424;
+                --row-hover: #2c3e50;
+                --link-color: #66b2ff;
+                --link-hover: #ffffff;
+                --shadow: 0 4px 10px rgba(0,0,0,0.4);
+                --focus-ring: #66b2ff;
+            }
+        }
+
+        body {
+            font-family: ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        .header .path {
+            font-family: Consolas, "Courier New", monospace;
+            font-weight: bold;
+        }
+        
+        .header a {
+            color: inherit;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .header img.icon {
+            margin-right: 8px;
+            width: 16px; 
+            height: 16px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn img.icon {
+            margin-right: 6px;
+        }
+
+        .btn:hover {
+            background-color: var(--row-hover);
+            border-color: var(--link-color);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 6px 8px;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        
+        @media (max-width: 480px) {
+            .search-box { max-width: 100%; }
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            outline: none;
+            font-size: 14px;
+            margin-left: 6px;
+            width: 100%;
+        }
+
+        .search-box input[type="search"]::-webkit-search-decoration,
+        .search-box input[type="search"]::-webkit-search-cancel-button,
+        .search-box input[type="search"]::-webkit-search-results-button,
+        .search-box input[type="search"]::-webkit-search-results-decoration {
+            -webkit-appearance: none;
+        }
+
+        .table-wrapper {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--row-alt);
+            padding: 10px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background-color: var(--row-hover);
+            color: var(--text-color);
+        }
+
+        th::after {
+            content: " \21D5";
+            opacity: 0.3;
+        }
+
+        th.sort-asc::after { content: " \2191"; opacity: 1; }
+        th.sort-desc::after { content: " \2193"; opacity: 1; }
+
+        td {
+            padding: 0;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        tr:nth-child(even) { background-color: var(--row-alt); }
+        tr:hover { background-color: var(--row-hover); }
+        tr:last-child td { border-bottom: none; }
+
+        a.file-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px; 
+            color: var(--link-color);
+            text-decoration: none;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 14px;
+        }
+
+        a.file-link:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+        
+        a.file-link:focus, .btn:focus, .search-box input:focus, .header a:focus {
+            outline: 2px dashed var(--focus-ring);
+            outline-offset: -2px;
+        }
+
+        a.file-link img.icon {
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+        }
+        
+        .is-symlink img.icon {
+            opacity: 0.7;
+        }
+
+        .meta-cell {
+            padding: 12px 15px;
+            color: var(--text-muted);
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        #noMatches {
+            display: none;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Responsive, low-profile CC BY 2.5 compliant footer */
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .footer a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img class="icon" src="/assets/icons/server.png" alt="" aria-hidden="true">
+            <h1>Index of 
+                <span class="path">
+                    <a href="/public/">/public/</a>{% if page.dir_path != '' %}{% assign parts = page.dir_path | split: '/' %}{% assign cum_path = '' %}{% for part in parts %}{% if part != '' %}{% assign cum_path = cum_path | append: part | append: '/' %}<a href="/public/{{ cum_path | uri_escape }}">{{ part | escape }}/</a>{% endif %}{% endfor %}{% endif %}
+                </span>
+            </h1>
+        </div>
+
+        <div class="toolbar">
+            <div>
+                {% if page.dir_path != '' %}
+                    <a href="../" class="btn">
+                        <img class="icon" src="/assets/icons/arrow_up.png" alt="" aria-hidden="true">
+                        Parent Directory
+                    </a>
+                {% endif %}
+            </div>
+            <div class="search-box">
+                <img class="icon" src="/assets/icons/magnifier.png" alt="" aria-hidden="true">
+                <input type="search" id="fileFilter" aria-label="Filter files" placeholder="Filter files...">
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            {% assign current = site.data.directory[page.dir_path] %}
+            {% if current and current.size > 0 %}
+                <table id="dirTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 100%;" data-type="string">Name</th>
+                            <th scope="col" data-type="string">Date Modified</th>
+                            <th scope="col" style="text-align: right;" data-type="size">Size</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileList">
+                    {% for item in current %}
+                        <tr>
+                            <td data-sort="{{ item.type }}-{{ item.name | downcase }}">
+                                {% if item.type == 'dir' %}
+                                    <a class="file-link {% if item.isSymlink %}is-symlink{% endif %}" href="./{{ item.name | uri_escape }}/" {% if item.isSymlink %}title="Symbolic Link"{% endif %}>
+                                        <img class="icon" src="/assets/icons/folder.png" alt="" aria-hidden="true">
+                                        {{ item.name | escape }}/
+                                    </a>
+                                {% elsif item.type == 'url' %}
+                                    <a class="file-link" href="{{ item.target }}" target="_blank" rel="noopener noreferrer" title="External Link: {{ item.target }}">
+                                        <img class="icon" src="/assets/icons/link.png" alt="" aria-hidden="true">
+                                        {{ item.name | escape }}
+                                    </a>
+                                {% else %}
+                                    <a class="file-link {% if item.isSymlink %}is-symlink{% endif %}" href="./{{ item.name | uri_escape }}" {% if item.isSymlink %}title="Symbolic Link"{% elsif item.isHardlink %}title="Hardlink"{% endif %}>
+                                        
+                                        {% comment %} Fetch from Include component {% endcomment %}
+                                        {% capture icon_name %}{% include icon_mapper.html ext=item.ext %}{% endcapture %}
+                                        
+                                        <img class="icon" src="/assets/icons/{{ icon_name }}.png" alt="" aria-hidden="true">
+                                        {{ item.name | escape }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td class="meta-cell" data-sort="{{ item.date | default: '0000' }}">{{ item.date | default: '-' }}</td>
+                            <td class="meta-cell size-cell" data-sort="{% if item.size contains ' B' %}1{% elsif item.size contains ' KB' %}2{% elsif item.size contains ' MB' %}3{% elsif item.size contains ' GB' %}4{% elsif item.size contains ' TB' %}5{% else %}0{% endif %}-{{ item.size | split: ' ' | first | default: '0' | pad_left: 10, '0' }}">{{ item.size | default: '-' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div id="noMatches">No matching files found.</div>
+            {% else %}
+                <div class="empty-state">
+                    <p>This directory is empty.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- CC BY 2.5 Compliant Footer -->
+        <footer class="footer">
+            Icons: <a href="https://github.com/markjames/famfamfam-silk-icons" target="_blank" rel="noopener noreferrer">Silk Icon Set</a> by FamFamFam (Mark James) / Licensed under <a href="https://creativecommons.org/licenses/by/2.5/" target="_blank" rel="noopener noreferrer">CC BY 2.5</a>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var input = document.getElementById('fileFilter');
+            var noMatches = document.getElementById('noMatches');
+            
+            if (input) {
+                input.addEventListener('input', function() {
+                    var filter = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#fileList tr');
+                    var visibleCount = 0;
+                    
+                    for (var i = 0; i < rows.length; i++) {
+                        var fileName = rows[i].cells[0].textContent.toLowerCase();
+                        if (fileName.indexOf(filter) > -1) {
+                            rows[i].style.display = "";
+                            visibleCount++;
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                    
+                    if (noMatches) {
+                        noMatches.style.display = (visibleCount === 0 && rows.length > 0) ? "block" : "none";
+                        document.getElementById('dirTable').style.display = (visibleCount === 0 && rows.length > 0) ? "none" : "table";
+                    }
+                });
+            }
+
+            var headers = document.querySelectorAll('th');
+            var tbody = document.getElementById('fileList');
+
+            headers.forEach(function(header, index) {
+                header.addEventListener('click', function() {
+                    if(!tbody) return;
+                    var rows = Array.from(tbody.querySelectorAll('tr'));
+                    var isAsc = this.classList.contains('sort-asc');
+                    
+                    headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                    this.classList.add(isAsc ? 'sort-desc' : 'sort-asc');
+
+                    rows.sort(function(a, b) {
+                        var aVal = a.cells[index].getAttribute('data-sort') || a.cells[index].textContent.trim();
+                        var bVal = b.cells[index].getAttribute('data-sort') || b.cells[index].textContent.trim();
+
+                        if (aVal < bVal) return isAsc ? 1 : -1;
+                        if (aVal > bVal) return isAsc ? -1 : 1;
+                        return 0;
+                    });
+
+                    rows.forEach(function(row) {
+                        tbody.appendChild(row);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

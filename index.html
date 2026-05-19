@@ -1,0 +1,35 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Redirecting...</title>
+    <!-- Fallback for legacy browsers -->
+    <meta http-equiv="refresh" content="0; url=/public/">
+    <script>
+        // Instantly replace the root URL in browser history so the "Back" button still works normally
+        window.location.replace("/public/");
+    </script>
+    <style>
+        body {
+            font-family: ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f6f8;
+            color: #666666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #121212; color: #999999; }
+        }
+    </style>
+</head>
+<body>
+    <p>Redirecting to /public/... <a href="/public/" style="color: #0366d6;">Click here</a></p>
+</body>
+</html>

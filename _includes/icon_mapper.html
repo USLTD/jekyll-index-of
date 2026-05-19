@@ -1,0 +1,95 @@
+{% assign ext = include.ext %}
+{% assign icon = 'page_white' %}
+
+{% case ext %}
+    {% comment %} --- Documents & Text --- {% endcomment %}
+    {% when 'txt','md','log','nfo','err' %}
+        {% assign icon = 'page_white_text' %}
+    {% when 'pdf' %}
+        {% assign icon = 'page_white_acrobat' %}
+    {% when 'doc','docx','rtf','odt' %}
+        {% assign icon = 'page_white_word' %}
+    {% when 'xls','xlsx','csv','ods','tsv' %}
+        {% assign icon = 'page_white_excel' %}
+    {% when 'ppt','pptx','pps','odp' %}
+        {% assign icon = 'page_white_powerpoint' %}
+    {% when 'epub','mobi','azw','cbz','cbr' %}
+        {% assign icon = 'book' %}
+
+    {% comment %} --- Images & Design --- {% endcomment %}
+    {% when 'jpg','jpeg','png','gif','bmp','webp','ico','tiff','tif' %}
+        {% assign icon = 'page_white_picture' %}
+    {% when 'svg','eps','ai','cdr' %}
+        {% assign icon = 'page_white_vector' %}
+    {% when 'psd','xcf' %}
+        {% assign icon = 'page_white_paint' %}
+    {% when 'swf' %}
+        {% assign icon = 'page_white_flash' %}
+
+    {% comment %} --- Web & Code --- {% endcomment %}
+    {% when 'html','htm','shtml','xhtml' %}
+        {% assign icon = 'page_white_code' %}
+    {% when 'css','less','sass','scss' %}
+        {% assign icon = 'page_white_code' %}
+    {% when 'js','ts','jsx','tsx','json','xml','yaml','yml' %}
+        {% assign icon = 'page_white_code' %}
+    {% when 'php','phtml' %}
+        {% assign icon = 'page_white_php' %}
+    {% when 'rb' %}
+        {% assign icon = 'page_white_ruby' %}
+    {% when 'c','h' %}
+        {% assign icon = 'page_white_c' %}
+    {% when 'cpp','cc','cxx','hpp' %}
+        {% assign icon = 'page_white_cplusplus' %}
+    {% when 'cs' %}
+        {% assign icon = 'page_white_csharp' %}
+    {% when 'java','class','jar' %}
+        {% assign icon = 'page_white_cup' %}
+    {% when 'sln','csproj','vbproj','vb' %}
+        {% assign icon = 'page_white_visualstudio' %}
+    {% when 'as' %}
+        {% assign icon = 'page_white_actionscript' %}
+    {% when 'cfm','cfc' %}
+        {% assign icon = 'page_white_coldfusion' %}
+
+    {% comment %} --- System, Executables & Configs --- {% endcomment %}
+    {% when 'exe','msi','bat','cmd','ps1','reg' %}
+        {% assign icon = 'application_xp' %}
+    {% when 'dmg','app','pkg','command' %}
+        {% assign icon = 'application_osx' %}
+    {% when 'sh','bash','zsh' %}
+        {% assign icon = 'page_white_tux' %}
+    {% when 'dll','sys','so','dylib','ini','conf','cfg','env' %}
+        {% assign icon = 'page_white_gear' %}
+
+    {% comment %} --- Archives & Disk Images --- {% endcomment %}
+    {% when 'zip' %}
+        {% assign icon = 'page_white_zip' %}
+    {% when 'tar','gz','rar','7z','bz2','xz' %}
+        {% assign icon = 'page_white_compressed' %}
+    {% when 'iso','img','vdi','vmdk','qcow2','cue','mds' %}
+        {% assign icon = 'page_white_cd' %}
+    {% when 'vob','ifo' %}
+        {% assign icon = 'page_white_dvd' %}
+
+    {% comment %} --- Audio & Video --- {% endcomment %}
+    {% when 'mp3','wav','flac','ogg','m4a','wma','aac','mid','midi' %}
+        {% assign icon = 'music' %}
+    {% when 'mp4','avi','mkv','mov','wmv','webm','m4v','flv' %}
+        {% assign icon = 'film' %}
+
+    {% comment %} --- Databases --- {% endcomment %}
+    {% when 'sql','db','sqlite','sqlite3','mdb','accdb','frm','ibd' %}
+        {% assign icon = 'page_white_database' %}
+
+    {% comment %} --- Misc Useful Types --- {% endcomment %}
+    {% when 'ttf','otf','woff','woff2','eot' %}
+        {% assign icon = 'font' %}
+    {% when 'vcf' %}
+        {% assign icon = 'vcard' %}
+    {% when 'ics' %}
+        {% assign icon = 'calendar' %}
+    {% when 'rss','atom' %}
+        {% assign icon = 'feed' %}
+{% endcase %}
+{{- icon -}}
