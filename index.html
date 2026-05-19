@@ -1,6 +1,8 @@
 ---
 layout: null
 ---
+{% assign content_root = site.content_root | default: 'public' %}
+{% assign root_url = '/' | append: content_root | append: '/' | replace: '//', '/' | relative_url %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +10,10 @@ layout: null
     <meta name="robots" content="noindex, nofollow">
     <title>Redirecting...</title>
     <!-- Fallback for legacy browsers -->
-    <meta http-equiv="refresh" content="0; url=/public/">
+    <meta http-equiv="refresh" content="0; url={{ root_url }}">
     <script>
         // Instantly replace the root URL in browser history so the "Back" button still works normally
-        window.location.replace("/public/");
+        window.location.replace({{ root_url | jsonify }});
     </script>
     <style>
         body {
@@ -30,6 +32,6 @@ layout: null
     </style>
 </head>
 <body>
-    <p>Redirecting to /public/... <a href="/public/" style="color: #0366d6;">Click here</a></p>
+    <p>Redirecting to {{ root_url }}... <a href="{{ root_url }}" style="color: #0366d6;">Click here</a></p>
 </body>
 </html>

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% assign content_root = page.content_root | default: site.content_root | default: 'public' %}
+    {% assign root_url = '/' | append: content_root | append: '/' | replace: '//', '/' | relative_url %}
+    {% assign root_display = '/' | append: content_root | append: '/' | replace: '//', '/' %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Index of /public/{{ page.dir_path | escape }}</title>
+    <title>Index of {{ root_display }}{{ page.dir_path | escape }}</title>
     <style>
         :root {
             --bg-color: #f5f6f8;
@@ -275,10 +278,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <img class="icon" src="/assets/icons/server.png" alt="" aria-hidden="true">
+            <img class="icon" src="{{ '/assets/icons/server.png' | relative_url }}" alt="" aria-hidden="true">
             <h1>Index of 
                 <span class="path">
-                    <a href="/public/">/public/</a>{% if page.dir_path != '' %}{% assign parts = page.dir_path | split: '/' %}{% assign cum_path = '' %}{% for part in parts %}{% if part != '' %}{% assign cum_path = cum_path | append: part | append: '/' %}<a href="/public/{{ cum_path | uri_escape }}">{{ part | escape }}/</a>{% endif %}{% endfor %}{% endif %}
+                    <a href="{{ root_url }}">{{ root_display }}</a>{% if page.dir_path != '' %}{% assign parts = page.dir_path | split: '/' %}{% assign cum_path = '' %}{% for part in parts %}{% if part != '' %}{% assign cum_path = cum_path | append: part | append: '/' %}<a href="{{ root_url }}{{ cum_path | uri_escape }}">{{ part | escape }}/</a>{% endif %}{% endfor %}{% endif %}
                 </span>
             </h1>
         </div>
@@ -287,13 +290,13 @@
             <div>
                 {% if page.dir_path != '' %}
                     <a href="../" class="btn">
-                        <img class="icon" src="/assets/icons/arrow_up.png" alt="" aria-hidden="true">
+                        <img class="icon" src="{{ '/assets/icons/arrow_up.png' | relative_url }}" alt="" aria-hidden="true">
                         Parent Directory
                     </a>
                 {% endif %}
             </div>
             <div class="search-box">
-                <img class="icon" src="/assets/icons/magnifier.png" alt="" aria-hidden="true">
+                <img class="icon" src="{{ '/assets/icons/magnifier.png' | relative_url }}" alt="" aria-hidden="true">
                 <input type="search" id="fileFilter" aria-label="Filter files" placeholder="Filter files...">
             </div>
         </div>
@@ -315,12 +318,12 @@
                             <td data-sort="{{ item.type }}-{{ item.name | downcase }}">
                                 {% if item.type == 'dir' %}
                                     <a class="file-link {% if item.isSymlink %}is-symlink{% endif %}" href="./{{ item.name | uri_escape }}/" {% if item.isSymlink %}title="Symbolic Link"{% endif %}>
-                                        <img class="icon" src="/assets/icons/folder.png" alt="" aria-hidden="true">
+                                        <img class="icon" src="{{ '/assets/icons/folder.png' | relative_url }}" alt="" aria-hidden="true">
                                         {{ item.name | escape }}/
                                     </a>
                                 {% elsif item.type == 'url' %}
                                     <a class="file-link" href="{{ item.target }}" target="_blank" rel="noopener noreferrer" title="External Link: {{ item.target }}">
-                                        <img class="icon" src="/assets/icons/link.png" alt="" aria-hidden="true">
+                                        <img class="icon" src="{{ '/assets/icons/link.png' | relative_url }}" alt="" aria-hidden="true">
                                         {{ item.name | escape }}
                                     </a>
                                 {% else %}
@@ -329,7 +332,7 @@
                                         {% comment %} Fetch from Include component {% endcomment %}
                                         {% capture icon_name %}{% include icon_mapper.html ext=item.ext %}{% endcapture %}
                                         
-                                        <img class="icon" src="/assets/icons/{{ icon_name }}.png" alt="" aria-hidden="true">
+                                        <img class="icon" src="{{ '/assets/icons/' | append: icon_name | append: '.png' | relative_url }}" alt="" aria-hidden="true">
                                         {{ item.name | escape }}
                                     </a>
                                 {% endif %}

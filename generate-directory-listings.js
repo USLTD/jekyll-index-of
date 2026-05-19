@@ -1,7 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
-const PUBLIC_DIR = path.join(__dirname, 'public');
+function normalizeContentRoot(rawValue) {
+    const normalized = String(rawValue || '')
+        .trim()
+        .replace(/\\/g, '/')
+        .replace(/^\/+|\/+$/g, '');
+
+    if (!normalized) return 'public';
+    if (normalized.includes('..')) {
+        throw new Error(`Invalid content root "${rawValue}": parent directory segments are not allowed.`);
+    }
+
+    return normalized;
+}
+
+function resolveContentRoot() {
+    if (process.env.CONTENT_ROOT) {
+        return normalizeContentRoot(process.env.CONTENT_ROOT);
+    }
+
+    const configPath = path.join(__dirname, '_config.yml');
+    if (fs.existsSync(configPath)) {
+        const config = fs.readFileSync(configPath, 'utf8');
+        const match = config.match(/^\s*content_root:\s*["']?([^"'\n#]+)["']?/m);
+        if (match && match[1]) {
+            return normalizeContentRoot(match[1]);
+        }
+    }
+
+    return 'public';
+}
+
+const CONTENT_ROOT = resolveContentRoot();
+const PUBLIC_DIR = path.join(__dirname, CONTENT_ROOT);
 const DATA_FILE  = path.join(__dirname, '_data', 'directory.json');
 const IGNORE     = new Set(['.git', '.gitkeep', 'index.html', '.DS_Store']);
 
@@ -91,9 +123,11 @@ function processDir(dirAbs, dirRel, listing) {
     // Generate Jekyll index.html
     const pagePath = path.join(PUBLIC_DIR, ...dirRel.split('/').filter(Boolean), 'index.html');
     const yamlSafeDirRel = dirRel.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const yamlSafeContentRoot = CONTENT_ROOT.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     const frontMatter = [
         '---',
         `layout: directory`,
+        `content_root: "${yamlSafeContentRoot}"`,
         `dir_path: "${yamlSafeDirRel}"`,
         '---'
     ].join('\n');
@@ -104,7 +138,7 @@ function processDir(dirAbs, dirRel, listing) {
 }
 
 if (!fs.existsSync(PUBLIC_DIR)) {
-    console.error('public/ directory not found!');
+    console.error(`"${CONTENT_ROOT}/" directory not found!`);
     process.exit(1);
 }
 
@@ -116,4 +150,4 @@ const listing = {};
 processDir(PUBLIC_DIR, '', listing);
 
 fs.writeFileSync(DATA_FILE, JSON.stringify(listing, null, 2), 'utf8');
-console.log('Successfully generated _data/directory.json and populated index files.');
+console.log(`Successfully generated _data/directory.json and populated index files for "${CONTENT_ROOT}/".`);
