@@ -1,57 +1,45 @@
 # jekyll-index-of
 
-A Jekyll + GitHub Pages template that renders an elegant, searchable “Index of …” file browser for content stored under `public/`.
+An elegant, searchable directory listing template for Jekyll and GitHub Pages.
 
-## Template readiness review
+It turns a content folder (default: `public/`) into an “Index of …” browsing experience with:
+- file/folder listings
+- breadcrumb navigation
+- parent-directory navigation
+- file-type icons
+- in-page search and sorting
 
-### What is already template-friendly
-- Generic repository structure (`_layouts`, `_includes`, `assets/icons`, `public/`).
-- No secrets or environment-specific credentials in tracked files.
-- Automated build pipeline for GitHub Pages (`.github/workflows/pages.yml`).
-- MIT license is present.
+## Use this as a GitHub template
 
-### Missing / potentially problematic for template use
-- **Hardcoded content root**: `/public/` is hardcoded in `index.html`, `_layouts/directory.html`, and `generate-directory-listings.js`.
-- **Base URL assumptions**: absolute links (for example `/assets/...`) may require care on project Pages sites.
-- **Generated files can be accidentally committed** without explicit ignore rules (`_data/directory.json`, generated `public/**/index.html`).
-- **Minimal setup docs** (before this update) made onboarding/customization unclear.
+1. Click **Use this template**.
+2. Create your new repository.
+3. Add your files under the content root (default: `public/`).
+4. Enable **GitHub Pages** in your new repository and choose **GitHub Actions** as the source.
+5. Push to `main`.
 
-### Recommended improvements
-- Add configurable content root and base-url-safe link handling.
-- Keep generated listing artifacts out of commits.
-- Document setup/customization paths clearly for template users.
-- Optionally add `_config.yml` defaults to centralize site-level settings.
-
-## Use this repository as a template
-
-1. Click **Use this template** on GitHub.
-2. Create a new repository from this template.
-3. In your new repo, add files/folders under `public/`.
-4. Enable **GitHub Pages** (Settings → Pages) and select **GitHub Actions** as the source.
-5. Push to `main` to trigger deployment.
+The included workflow builds and deploys automatically.
 
 ## How it works
 
-- `generate-directory-listings.js` scans `public/` recursively.
-- It writes directory metadata to `_data/directory.json`.
-- It creates `index.html` files in each directory using front matter and the `directory` layout.
-- Jekyll renders the directory pages with search, sorting, icons, and parent navigation.
+1. `node generate-directory-listings.js` scans your content root recursively.
+2. It generates:
+   - `_data/directory.json` (directory metadata)
+   - `index.html` files inside each content directory
+3. Jekyll renders pages using `_layouts/directory.html`.
 
-## Local setup and usage
+## Setup
 
 ### Prerequisites
-- Node.js 20+ (used for listing generation)
-- Ruby + Jekyll toolchain (for local Jekyll serving)
+- Node.js 20+
+- Jekyll toolchain for local preview (Ruby + Jekyll)
 
-### Build listing data
+### Generate listing pages/data
 
 ```bash
 node generate-directory-listings.js
 ```
 
-### Run locally with Jekyll
-
-If your environment already has Jekyll installed:
+### Local preview
 
 ```bash
 jekyll serve
@@ -59,20 +47,32 @@ jekyll serve
 
 Then open `http://localhost:4000`.
 
-## Customization guide
+## Configuration
 
-- **File-type icons**: edit `_includes/icon_mapper.html`.
-- **UI/layout**: edit `_layouts/directory.html` styles and markup.
-- **Redirect behavior**: edit root `index.html`.
-- **Content**: place files and folders under `public/`.
+### `content_root`
 
-For deeper template hardening, consider parameterizing the `/public/` path and absolute asset links.
+Default content root is `public`.
 
-## Additional template-appropriate changes to keep
+You can change it in `_config.yml`:
 
-- Keep `.gitignore` entries for generated listing artifacts.
-- Keep `LICENSE` in derived repositories.
-- Consider adding docs for your own conventions if you further customize behavior.
+```yml
+content_root: public
+```
+
+Or override for generation with an environment variable:
+
+```bash
+CONTENT_ROOT=downloads node generate-directory-listings.js
+```
+
+When changing `content_root`, move your files/folders to that directory.
+
+## Customization
+
+- Layout and styles: `_layouts/directory.html`
+- File extension → icon mapping: `_includes/icon_mapper.html`
+- Root redirect page: `index.html`
+- Icons: `assets/icons/`
 
 ## License
 
