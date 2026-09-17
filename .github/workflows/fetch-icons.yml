@@ -1,4 +1,4 @@
-name: Fetch missing Silk icons
+name: Fetch missing FatCow icons
 
 on:
   push:
@@ -87,7 +87,7 @@ jobs:
             $needsDownload = ($null -eq $item) -or $isLink
 
             if ($needsDownload) {
-              $url = "https://raw.githubusercontent.com/markjames/famfamfam-silk-icons/master/icons/$icon.png"
+              $url = "https://raw.githubusercontent.com/gammasoft/fatcow/master/16x16/$icon.png"
               $tempFile = "$iconFile.download"
               Write-Host "Downloading $icon.png from $url ..."
               try {
