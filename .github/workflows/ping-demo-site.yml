@@ -2,7 +2,7 @@ name: Ping Demo Repo on Update
 
 on:
   workflow_run:
-    workflows: [ "Fetch missing Silk icons" ] # Waits for your icon fetcher
+    workflows: [ "Fetch missing FatCow icons" ] # Waits for your icon fetcher
     types:
       - completed
   push:

@@ -9,7 +9,7 @@ on:
       - '_includes/icon_mapper.html'
       - '.github/workflows/fetch-icons.yml'
   workflow_run:
-    workflows: [ "Fetch missing Silk icons" ]
+    workflows: [ "Fetch missing FatCow icons" ]
     types:
       - completed
   workflow_dispatch:
