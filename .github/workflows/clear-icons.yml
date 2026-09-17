@@ -1,0 +1,43 @@
+name: Clear icon set
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clear-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete all icons except placeholder
+        shell: bash
+        run: |
+          icon_dir="assets/icons"
+          placeholder="__placeholder.png"
+
+          if [ ! -d "$icon_dir" ]; then
+            echo "Icon directory not found, nothing to clean."
+            exit 0
+          fi
+
+          find "$icon_dir" -mindepth 1 -maxdepth 1 -type f ! -name "$placeholder" -delete
+
+      - name: Commit icon cleanup
+        shell: bash
+        run: |
+          if git diff --quiet -- "$PWD/assets/icons"; then
+            echo "No icon files removed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/icons
+          git commit -m "Remove existing icon set [skip ci]"
+          git push
