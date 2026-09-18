@@ -67,12 +67,25 @@ CONTENT_ROOT=downloads node generate-directory-listings.js
 
 When changing `content_root`, move your files/folders to that directory.
 
+### Symlinks
+
+Symlink handling is intentionally conservative so that builds stay reproducible and safe:
+
+- **File symlinks** inside the content root are listed (marked as symlinks) and served like normal files.
+- **Directory symlinks** are listed, but never traversed — they link straight to their target's canonical listing page.
+- **Symlinks pointing outside the content root** are skipped entirely (GitHub Pages would never publish their targets anyway).
+- **Broken symlinks** and **circular directory symlinks** are reported as build breakers — remove or repair them, otherwise the Jekyll build fails with a filesystem error.
+
+### Custom `index.html` pages
+
+You can drop your own `index.html` into any content directory. The generator preserves user-authored pages and never overwrites them; generated pages are refreshed on every run. If your page uses `layout: directory`, its body content is rendered below the file table.
+
 ## Customization
 
 - Layout and styles: `_layouts/directory.html`
 - File extension → icon mapping: `_includes/icon_mapper.html`
 - Root redirect page: `index.html`
-- Icons: `assets/icons/`
+- Icons: `assets/icons/` — all referenced icons (FatCow pack, CC BY 3.0) are committed to the repository, so a fresh clone builds and previews correctly without waiting for CI. The *Fetch missing FatCow icons* workflow keeps the set in sync automatically whenever the layout, mapper, or 404 page change.
 
 ## License
 
